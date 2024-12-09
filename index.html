@@ -3,79 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To-Do List!</title>
+    <title>Download Page or Error</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: url('https://wallpapercave.com/wp/wp9361555.jpg') no-repeat center center fixed;
-            background-size: cover;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #f0f0f0; /* Simple light grey background */
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            text-align: center;
         }
-        .container {
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 40px; /* Increased padding for a bigger look */
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            width: 600px; /* Increased width */
-            max-height: 80vh;
-            overflow-y: auto;
+
+        #error-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
-        h1 { text-align: center; }
-        .input-container { display: flex; margin-bottom: 20px; }
-        input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
-        button { padding: 10px; border: none; background: #28a745; color: white; border-radius: 5px; margin-left: 10px; cursor: pointer; }
-        button:hover { background: #218838; }
-        ul { list-style: none; padding: 0; }
-        li { background: #f8f9fa; padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
-        li.completed {  color: #aaa; }
-        li button { background: #dc3545; border: none; color: white; padding: 5px; border-radius: 5px; cursor: pointer; }
-        li button:hover { background: #c82333; }
-        .task-section { margin-bottom: 20px; }
+
+        h1 {
+            font-size: 6em;
+            margin: 0;
+            color: #ff4d4d; /* Bright red for errors */
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        p {
+            font-size: 1.5em;
+            margin: 20px 0;
+            color: #555;
+        }
+
+        a, button {
+            font-size: 1.2em;
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            background: #ff4d4d;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        a:hover, button:hover {
+            background: #e63939;
+            transform: scale(1.1);
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 style="background-color:tomato;color:white;">To-Do List</h1>
-        <div class="input-container">
-            <input id="todo-input" placeholder="Enter new tasks">
-            <button id="add-btn">ADD</button>
-        </div>
-        <div class="task-section">
-            <h2>Pending Tasks:</h2>
-            <ul id="remaining-list"></ul>
-        </div>
-        <div class="task-section">
-            <h2>Accomplished Tasks:</h2>
-            <ul id="completed-list"></ul>
-        </div>
+    <div id="error-container">
+        <h1 id="error-code">404</h1>
+        <p id="error-message">Oops! The page you're trying to access doesn't exist.</p>
+        <button id="redirect-button">Go to Download Page</button>
     </div>
-    <script>
-        document.getElementById('add-btn').addEventListener('click', addTodo);
-        function addTodo() {
-            const todoInput = document.getElementById('todo-input');
-            const todoText = todoInput.value.trim();
-            if (!todoText) return;
 
-            const todoItem = document.createElement('li');
-            todoItem.textContent = todoText;
-            const deleteBtn = document.createElement('button');
-            deleteBtn.textContent = 'DELETE'; // Changed to full caps
-            deleteBtn.onclick = () => todoItem.remove();
-            todoItem.appendChild(deleteBtn);
-            todoItem.onclick = (e) => {
-                if (e.target !== deleteBtn) {
-                    todoItem.classList.toggle('completed');
-                    const targetList = todoItem.classList.contains('completed') ? 'completed-list' : 'remaining-list';
-                    document.getElementById(targetList).appendChild(todoItem);
-                }
-            };
-            document.getElementById('remaining-list').appendChild(todoItem);
-            todoInput.value = '';
-        }
+    <script>
+        // Get references to the error elements
+        const errorCode = document.getElementById('error-code');
+        const errorMessage = document.getElementById('error-message');
+        const redirectButton = document.getElementById('redirect-button');
+
+        // Handle button click to redirect to actual zip file
+        redirectButton.addEventListener('click', () => {
+            // Change the message or redirect logic
+            errorCode.textContent = '469';
+            errorMessage.textContent = 'Redirecting to download...';
+            setTimeout(() => {
+                window.location.href = '/assets/cn.zip'; // Change path as needed
+            }, 2000); // Redirect after 2 seconds
+        });
     </script>
 </body>
 </html>
