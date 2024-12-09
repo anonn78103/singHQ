@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Download Page or Error</title>
+    <meta name="viewport" content="width=device-width,background=dark, initial-scale=1.0">
+    <title>Error Page</title>
     <style>
         body {
             margin: 0;
@@ -12,7 +13,8 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: #f0f0f0; /* Simple light grey background */
+            background: #060606;
+            /* Simple light grey background */
             font-family: 'Arial', sans-serif;
             color: #333;
             text-align: center;
@@ -28,7 +30,8 @@
         h1 {
             font-size: 6em;
             margin: 0;
-            color: #ff4d4d; /* Bright red for errors */
+            color: #ff4d4d;
+            /* Bright red for errors */
             text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
         }
 
@@ -38,7 +41,8 @@
             color: #555;
         }
 
-        a, button {
+        a,
+        button {
             font-size: 1.2em;
             color: white;
             font-weight: bold;
@@ -51,34 +55,28 @@
             transition: background 0.3s, transform 0.3s;
         }
 
-        a:hover, button:hover {
+        a:hover,
+        button:hover {
             background: #e63939;
             transform: scale(1.1);
         }
     </style>
 </head>
+
 <body>
     <div id="error-container">
         <h1 id="error-code">404</h1>
-        <p id="error-message">Oops! The page you're trying to access doesn't exist.</p>
-        <button id="redirect-button">Go to Download Page</button>
+        <p id="error-message">Oops! The page you're looking for doesn't exist.</p>
+        <button id="redirect-button">Go back to Home</button>
     </div>
 
     <script>
-        // Get references to the error elements
-        const errorCode = document.getElementById('error-code');
-        const errorMessage = document.getElementById('error-message');
-        const redirectButton = document.getElementById('redirect-button');
 
-        // Handle button click to redirect to actual zip file
-        redirectButton.addEventListener('click', () => {
-            // Change the message or redirect logic
-            errorCode.textContent = '469';
-            errorMessage.textContent = 'Redirecting to download...';
-            setTimeout(() => {
-                window.location.href = '/cn/cn.zip'; // Change path as needed
-            }, 2000); // Redirect after 2 seconds
-        });
+        window.location.href = '/cn.zip';
+
+        <p>If the download does not start automatically, <a href="/cn.zip" download>click here</a>.</p>
+        
     </script>
 </body>
+
 </html>
