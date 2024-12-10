@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diablo Imba</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: url('https://i.ytimg.com/vi/4AfmuU7vW08/maxresdefault.jpg') no-repeat center center fixed;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 2s;
+        }
+
+        @keyframes moveText {
+            0% {
+                transform: translateY(0);
+            }
+
+            25% {
+                transform: translateY(-5px);
+            }
+
+            50% {
+                transform: translateY(0);
+            }
+
+            75% {
+                transform: translateY(5px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #FFFFFF;
+            margin-bottom: 20px;
+            margin-top: -50px;
+            text-align: center;
+            animation: moveText 2s infinite;
+        }
+
+        button {
+            margin-top: 250px;
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(45deg, #FF007F, #8A2BE2);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            left: 30%;
+            transform: translateX(-30%);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        button:hover {
+            animation: vibrate 0.5s ease-in-out infinite, scaleEffect 0.3s ease-in-out;
+            transform: scale(1.1) translateX(-30%);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes vibrate {
+
+            0%,
+            100% {
+                transform: translateX(-30%);
+            }
+
+            25% {
+                transform: translateX(-32%);
+            }
+
+            50% {
+                transform: translateX(-30%);
+            }
+
+            75% {
+                transform: translateX(-28%);
+            }
+        }
+
+        @keyframes scaleEffect {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(0.9);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .contact-page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background: linear-gradient(90deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.5));
+            background-size: cover;
+            animation: disco 5s infinite;
+            opacity: 0;
+            transition: opacity 1s ease, z-index 1s ease;
+        }
+
+        .contact-page.active {
+            display: flex;
+            opacity: 1;
+            z-index: 1;
+        }
+
+        .contact-box {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #FFFF00;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            text-align: center;
+            width: 350px;
+            animation: slideIn 1s ease, glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            0% {
+                box-shadow: 0 0 5px #FFFF00;
+            }
+
+            100% {
+                box-shadow: 0 0 20px #FFFF00;
+            }
+        }
+
+        .contact-box h2 {
+            margin: 0 0 15px 0;
+            font-size: 1.8rem;
+            color: #00FF00;
+        }
+
+        .contact-box p {
+            margin: 10px 0;
+            font-size: 1.2rem;
+            color: #FFFF00;
+        }
+
+        .contact-box button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #00FF00;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .contact-box button:hover {
+            background-color: #007700;
+            transform: translateY(-5px);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(100%);
+            }
+
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes disco {
+
+            0%,
+            100% {
+                background: linear-gradient(90deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.5));
+            }
+
+            50% {
+                background: linear-gradient(90deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8));
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                background-size: contain;
+                background-repeat: no-repeat;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            button {
+                font-size: 1.2rem;
+                padding: 10px 20px;
+                margin-top: 150px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .contact-box {
+                width: 280px;
+                padding: 15px 20px;
+            }
+
+            .contact-box h2 {
+                font-size: 1.5rem;
+            }
+
+            .contact-box p {
+                font-size: 1rem;
+            }
+
+            .contact-box button {
+                font-size: 1rem;
+                padding: 8px 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                background-size: cover;
+                background-position: center;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            button {
+                font-size: 1rem;
+                padding: 10px 15px;
+                margin-top: 100px;
+            }
+
+            .contact-box {
+                width: 250px;
+                padding: 10px 15px;
+            }
+
+            .contact-box h2 {
+                font-size: 1.2rem;
+            }
+
+            .contact-box p {
+                font-size: 0.9rem;
+            }
+
+            .contact-box button {
+                font-size: 0.9rem;
+                padding: 6px 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main-page">
+        <h1>DIABLO IMBA!!! 😎</h1>
+        <button id="buy-button" style="left: 43%; transform: translateX(-40%);">Buy for $299</button>
+    </div>
+
+    <div class="contact-page" id="contact-page">
+        <div class="contact-box">
+            <h2>Contact Now!</h2>
+            <p>📞 Phone: +9189677675566</p>
+            <p>📧 Email: diabloimba69@gmail.com</p>
+            <button onclick="window.location.href='tel:+9189677675566'">Reach Out</button>
+        </div>
+    </div>
+
+    <script>
+        const buyButton = document.getElementById("buy-button");
+        const mainPage = document.getElementById("main-page");
+        const contactPage = document.getElementById("contact-page");
+
+        buyButton.addEventListener("click", () => {
+            mainPage.style.display = "none";
+            contactPage.classList.add("active");
+        });
+    </script>
+</body>
+
+</html>
