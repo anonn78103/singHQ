@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Theme Webpage</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            animation: backgroundGradient 10s ease infinite;
+            transition: background 2s ease;
+        }
+
+        @keyframes backgroundGradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .welcome-container {
+            text-align: center;
+            animation: welcomeTextFade 3s ease-in-out infinite;
+        }
+
+        @keyframes welcomeTextFade {
+            0%,
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            50% {
+                opacity: 0.8;
+                transform: translateY(-10px);
+            }
+        }
+
+        .welcome-text {
+            font-size: 2rem;
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            animation: colorShift 5s infinite alternate;
+        }
+
+        @keyframes colorShift {
+            0% {
+                color: #FFFF00; /* Green heart color */
+            }
+            66% {
+                color: #4cf509; /* Deep orange */
+            }
+            100% {
+                color: #FFFF00; /* Green heart color */
+            }
+        }
+
+        .image-placeholder {
+            width: 300px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10rem; /* Increase the size of the emoji */
+            color: rgba(255, 100, 100, 0.8);
+            margin: 0 auto; /* Center the placeholder */
+        }
+
+        .button-container {
+            margin-top: 20px;
+        }
+
+        .mystery-button {
+            background: linear-gradient(135deg, #ff9a9e, #ff6f61, #fbc2eb, #fc0f7a);
+            border: none;
+            color: rgb(19, 75, 244);
+            font-size: 1.5rem;
+            padding: 15px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+        }
+
+        .mystery-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .animation-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            display: none;
+        }
+
+        .floating-hearts {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(255, 255, 255, 0.7);
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            animation: float 5s linear infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-10vh) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .popup {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            color: white;
+            font-size: 4rem;
+            text-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            animation: popup 1s forwards, colorchange 2s infinite;
+            display: none;
+        }
+
+        @keyframes popup {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
+            70% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        @keyframes colorchange {
+            0% {
+                color: #ff6f61;
+            }
+            25% {
+                color: #ffd700;
+            }
+            50% {
+                color: #32cd32;
+            }
+            75% {
+                color: #1e90ff;
+            }
+            100% {
+                color: #ff6f61;
+            }
+        }
+
+        @keyframes backgroundchange {
+            0% {
+                background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            }
+            50% {
+                background: linear-gradient(135deg, #a18cd1, #fbc2eb);
+            }
+            100% {
+                background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="welcome-section" class="welcome-container">
+        <div class="welcome-text">欢迎 Tingooo!!! (づ￣ 3￣)づ</div>
+        <div class="image-placeholder">🤗</div>
+        <div class="button-container">
+            <button class="mystery-button" onclick="showPopup()">神秘按钮 (o゜▽゜)o☆ 💞💗💞</button>
+        </div>
+    </div>
+    <div class="animation-container"></div>
+    <div id="popup" class="popup">❤️❤️我爱你!❤️❤️</div>
+
+    <script>
+        const container = document.querySelector('.animation-container');
+        const popup = document.getElementById('popup');
+        const welcomeSection = document.getElementById('welcome-section');
+
+        // Generate floating hearts
+        function createHearts() {
+            for (let i = 0; i < 50; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'floating-hearts';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                heart.style.animationDuration = 5 + Math.random() * 5 + 's';
+                container.appendChild(heart);
+            }
+        }
+
+        // Show popup
+        function showPopup() {
+            welcomeSection.style.display = 'none';
+            document.body.style.animation = 'backgroundchange 5s infinite';
+            popup.style.display = 'block';
+            container.style.display = 'block';
+            createHearts();
+            popup.style.animation = 'popup 1s forwards, colorchange 2s infinite';
+        }
+    </script>
+</body>
+
+</html>
