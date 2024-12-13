@@ -16,7 +16,7 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #111; /* Majestic dark background */
+            background-color: #111;
             color: #fff;
             display: flex;
             justify-content: center;
@@ -46,6 +46,10 @@
 
         .stats {
             margin: 10px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
         }
 
         .controls {
@@ -69,13 +73,14 @@
 
         main {
             display: grid;
-            grid-template-columns: repeat(4, 80px);
+            grid-template-columns: repeat(3, 80px);
+            /* Default grid layout for 3x3 */
             grid-gap: 5px;
             background: rgba(0, 0, 0, 0.7);
             padding: 5px;
             border-radius: 10px;
             transition: filter 0.3s;
-            margin-top: 40px;
+            margin-top: 20px;
         }
 
         .tile {
@@ -152,14 +157,6 @@
             background: #ff9900;
         }
 
-        #topScoresList {
-            list-style: none;
-            padding: 0;
-            color: #ffcc00;
-            font-family: "Press Start 2P", system-ui;
-            margin-top: 40px;
-        }
-
         .mode-buttons {
             display: flex;
             justify-content: center;
@@ -182,7 +179,32 @@
             background: #cc0077;
         }
 
+        .page-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin-top: 30px;
+            padding: 20px;
+            width: 100%;
+        }
+
+        .duration {
+            color: neon green;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
+        }
+
+        .best-time {
+          color: neon rgb(240, 76, 11);
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 0 0 10px #ff6600, 0 0 20px #ff6600;
+        }
+
         @keyframes bounce {
+
             0%,
             100% {
                 transform: translateY(0);
@@ -193,52 +215,56 @@
             }
         }
 
-        /* Scrollable page */
-        .page-content {
-            margin-top: 60px;
-            padding: 20px;
-            overflow-y: auto;
-            height: 100%;
-            width: 100%;
-        }
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 36px;
+            }
 
+            header p {
+                font-size: 18px;
+            }
+
+            .page-content {
+                margin-top: 15px;
+            }
+
+            main {
+                grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+                /* Adjust grid for smaller screens */
+                margin-top: 15px;
+            }
+
+            .controls button {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+        }
     </style>
 </head>
 
 <body>
     <header>
-        <h1>Sliding Puzzle Challenge</h1>
+        <h1>Sliding Puzzle Challenge</h1> 
+        <p> </p>
         <p>Can you solve it? 90% of people can't!</p>
     </header>
     <div class="page-content">
-        <main id="puzzle"></main>
-
         <section class="stats">
-            <p>Top Scores of the Day:</p>
-            <ul id="topScoresList">
-                <li>1. -</li>
-                <li>2. -</li>
-                <li>3. -</li>
-                <li>4. -</li>
-                <li>5. -</li>
-            </ul>
-            <p>Best Time: <span id="bestTime">-</span></p>
+          <h2>  <p>Best Time: <span id="bestTime" class="best-time">-</span></p> </h2>
+            <p class="duration">Time Taken: <span id="timer">00:00</span></p>
         </section>
 
+        <main id="puzzle"></main>
+
         <section class="controls">
-            <button onclick="changePuzzleSize(2)">2x2</button>
             <button onclick="changePuzzleSize(3)">3x3</button>
             <button onclick="changePuzzleSize(4)">4x4</button>
             <button onclick="changePuzzleSize(5)">5x5</button>
             <button onclick="changePuzzleSize(6)">6x6</button>
-            <button onclick="solvePuzzle()">Solve Puzzle</button>
         </section>
 
         <section class="mode-buttons">
             <button onclick="startGame()">Start Game</button>
-            <button onclick="solvePuzzle()">Solve Puzzle</button>
-            <button onclick="changePuzzleSize(4)">4x4 Mode</button>
-            <button onclick="changePuzzleSize(6)">6x6 Mode</button>
         </section>
     </div>
 
@@ -251,23 +277,37 @@
         const puzzleContainer = document.getElementById("puzzle");
         const winMessage = document.getElementById("winMessage");
         const bestTimeElement = document.getElementById("bestTime");
-        const topScoresList = document.getElementById("topScoresList");
+        const timerElement = document.getElementById("timer");
         let tiles = [];
         let timer = null;
         let timeElapsed = 0;
-        let size = 4; // Default puzzle size
-        let topScores = JSON.parse(localStorage.getItem('topScores')) || [0, 0, 0, 0, 0];
+        let currentPuzzleSize = 3;
 
-        // Sound Effects
-        const yippeeAudio = new Audio('yippee.mp3');
-        const successAudio = new Audio('success.mp3');
-        const moveAudio = new Audio('move.mp3');
+        let winSound = new Audio('success.mp3');
+        let moveSound = new Audio('move.mp3');
+
+        // Load best time for current puzzle size from localStorage
+        function loadBestTime() {
+            const bestTime = localStorage.getItem(`bestTime_${currentPuzzleSize}`);
+            if (bestTime) {
+                bestTimeElement.textContent = formatTime(bestTime);
+            } else {
+                bestTimeElement.textContent = "-";
+            }
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const sec = seconds % 60;
+            return `${minutes}:${sec.toString().padStart(2, '0')}`;
+        }
 
         function startGame() {
             winMessage.classList.remove("active");
-            tiles = Array.from({ length: size * size - 1 }, (_, i) => i + 1);
-            tiles.push(""); // Empty space
-            shuffleArray(tiles);
+            puzzleContainer.style.filter = "none";
+            tiles = Array.from({ length: currentPuzzleSize * currentPuzzleSize - 1 }, (_, i) => i + 1);
+            tiles.push("");
+            shuffleUntilSolvable(tiles);
             timeElapsed = 0;
             updateTimer();
             drawPuzzle();
@@ -281,9 +321,39 @@
             }
         }
 
+        function isSolvable() {
+            const inversions = countInversions(tiles);
+            if (currentPuzzleSize % 2 === 1) {
+                return inversions % 2 === 0;
+            } else {
+                const blankRow = Math.floor(tiles.indexOf("") / currentPuzzleSize);
+                const inversionsIsEven = inversions % 2 === 0;
+                const blankRowIsEven = blankRow % 2 === 0;
+                return (inversionsIsEven && blankRowIsEven) || (!inversionsIsEven && !blankRowIsEven);
+            }
+        }
+
+        function countInversions(array) {
+            let inversions = 0;
+            for (let i = 0; i < array.length; i++) {
+                for (let j = i + 1; j < array.length; j++) {
+                    if (array[i] && array[j] && array[i] > array[j]) {
+                        inversions++;
+                    }
+                }
+            }
+            return inversions;
+        }
+
+        function shuffleUntilSolvable(tiles) {
+            do {
+                shuffleArray(tiles);
+            } while (!isSolvable());
+        }
+
         function drawPuzzle() {
             puzzleContainer.innerHTML = "";
-            puzzleContainer.style.gridTemplateColumns = `repeat(${size}, 80px)`; // Adjust grid size dynamically
+            puzzleContainer.style.gridTemplateColumns = `repeat(${currentPuzzleSize}, 80px)`;
             tiles.forEach((tile, index) => {
                 const tileDiv = document.createElement("div");
                 tileDiv.className = tile ? "tile" : "tile empty";
@@ -295,28 +365,27 @@
 
         function moveTile(index) {
             const emptyIndex = tiles.indexOf("");
-            const validMoves = [emptyIndex - 1, emptyIndex + 1, emptyIndex - size, emptyIndex + size];
+            const validMoves = [emptyIndex - 1, emptyIndex + 1, emptyIndex - currentPuzzleSize, emptyIndex + currentPuzzleSize];
 
             if (validMoves.includes(index) && isAdjacent(index, emptyIndex)) {
                 [tiles[index], tiles[emptyIndex]] = [tiles[emptyIndex], tiles[index]];
                 drawPuzzle();
-                moveAudio.play();
+                moveSound.play();
                 if (isSolved()) {
                     puzzleContainer.style.filter = "blur(5px)";
                     stopTimer();
-                    saveTopScores();
-                    successAudio.play();
-                    yippeeAudio.play();
                     winMessage.classList.add("active");
+                    winSound.play();
+                    updateBestTime(timeElapsed);
                 }
             }
         }
 
         function isAdjacent(index1, index2) {
-            const row1 = Math.floor(index1 / size);
-            const col1 = index1 % size;
-            const row2 = Math.floor(index2 / size);
-            const col2 = index2 % size;
+            const row1 = Math.floor(index1 / currentPuzzleSize);
+            const col1 = index1 % currentPuzzleSize;
+            const row2 = Math.floor(index2 / currentPuzzleSize);
+            const col2 = index2 % currentPuzzleSize;
             return (Math.abs(row1 - row2) + Math.abs(col1 - col2)) === 1;
         }
 
@@ -342,43 +411,25 @@
         function updateTimer() {
             const minutes = Math.floor(timeElapsed / 60);
             const seconds = timeElapsed % 60;
-            bestTimeElement.textContent = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+            timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, "0")}`;
         }
 
-        function saveTopScores() {
-            topScores.push(timeElapsed);
-            topScores.sort((a, b) => a - b);
-            topScores = topScores.slice(0, 5);
-            localStorage.setItem('topScores', JSON.stringify(topScores));
-            updateTopScores();
-        }
-
-        function updateTopScores() {
-            topScoresList.innerHTML = topScores.map((score, index) => `<li>${index + 1}. ${formatTime(score)}</li>`).join('');
-        }
-
-        function formatTime(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const secondsFormatted = seconds % 60;
-            return `${minutes}:${secondsFormatted.toString().padStart(2, '0')}`;
-        }
-
-        function solvePuzzle() {
-            tiles = Array.from({ length: size * size - 1 }, (_, i) => i + 1);
-            tiles.push("");
-            drawPuzzle();
-            stopTimer();
-            puzzleContainer.style.filter = "blur(5px)";
-            winMessage.classList.add("active");
+        function updateBestTime(newTime) {
+            const previousBestTime = parseInt(localStorage.getItem(`bestTime_${currentPuzzleSize}`), 10);
+            if (isNaN(previousBestTime) || newTime < previousBestTime) {
+                localStorage.setItem(`bestTime_${currentPuzzleSize}`, newTime);
+                bestTimeElement.textContent = formatTime(newTime);
+            }
         }
 
         function changePuzzleSize(newSize) {
-            size = newSize;
+            currentPuzzleSize = newSize;
+            loadBestTime();
             startGame();
         }
 
+        loadBestTime();
         startGame();
-        updateTopScores();
     </script>
 </body>
 
