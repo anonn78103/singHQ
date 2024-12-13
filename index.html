@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
- 
+    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2Y1P90L5H9"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -14,7 +14,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-        content="Effortlessly manage your tasks with our simple and intuitive To-Do List app. Organize your day, track progress, and boost productivity easily. Perfect for personal and professional use.">
+        content="Manage tasks effortlessly with our To-Do List app. Boost productivity with ease, ideal for personal and professional use.">
     <meta name="keywords" content="To-Do List, Task Manager, Productivity App, Task Tracker, Organize Tasks">
     <meta name="robots" content="index, follow">
 
@@ -35,11 +35,9 @@
         .container {
             background-color: rgba(255, 255, 255, 0.9);
             padding: 40px;
-           
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             width: 600px;
-            
             max-height: 80vh;
             overflow-y: auto;
         }
@@ -86,8 +84,13 @@
             border-radius: 5px;
             margin-bottom: 5px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
+        }
+
+        li span {
+            flex: 1;
+            overflow-wrap: anywhere;
         }
 
         li.completed {
@@ -95,10 +98,11 @@
         }
 
         li button {
-            background: #dc3545;
-            border: none;
-            color: white;
+            margin-left: 10px;
             padding: 5px;
+            border: none;
+            background: #dc3545;
+            color: white;
             border-radius: 5px;
             cursor: pointer;
         }
@@ -109,6 +113,25 @@
 
         .task-section {
             margin-bottom: 20px;
+        }
+
+        .delete-container {
+            margin-top: 10px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        #delete-btn {
+            padding: 10px;
+            border: none;
+            background: #dc3545;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #delete-btn:hover {
+            background: #c82333;
         }
     </style>
 </head>
@@ -128,9 +151,11 @@
             <h2>Accomplished Tasks:</h2>
             <ul id="completed-list"></ul>
         </div>
+        <div class="delete-container">
+            <button id="delete-btn">DELETE ALL</button>
+        </div>
     </div>
     <script>
-       
         window.onload = function () {
             loadTasks();
         };
@@ -141,41 +166,32 @@
                 addTodo();
             }
         });
+        document.getElementById('delete-btn').addEventListener('click', deleteAllTasks);
 
         function addTodo() {
             const todoInput = document.getElementById('todo-input');
             const todoText = todoInput.value.trim();
             if (!todoText) return;
 
-            const todoItem = document.createElement('li');
-            todoItem.textContent = todoText;
-            const deleteBtn = document.createElement('button');
-            deleteBtn.textContent = 'DELETE';
-            deleteBtn.onclick = () => {
-                todoItem.remove();
-                saveTasks(); 
-            };
-            todoItem.appendChild(deleteBtn);
-            todoItem.onclick = (e) => {
-                if (e.target !== deleteBtn) {
-                    todoItem.classList.toggle('completed');
-                    const targetList = todoItem.classList.contains('completed') ? 'completed-list' : 'remaining-list';
-                    document.getElementById(targetList).appendChild(todoItem);
-                    saveTasks();  
-                }
-            };
+            const todoItem = createTaskElement(todoText);
             document.getElementById('remaining-list').appendChild(todoItem);
             todoInput.value = '';
 
-            saveTasks(); 
+            saveTasks();
         }
 
         function saveTasks() {
             const remainingTasks = [];
             const completedTasks = [];
 
-            document.querySelectorAll('#remaining-list li').forEach(item => remainingTasks.push(item.textContent.trim()));
-            document.querySelectorAll('#completed-list li').forEach(item => completedTasks.push(item.textContent.trim()));
+            document.querySelectorAll('#remaining-list li').forEach(item => {
+                const taskText = item.querySelector('span').textContent.trim();
+                remainingTasks.push(taskText);
+            });
+            document.querySelectorAll('#completed-list li').forEach(item => {
+                const taskText = item.querySelector('span').textContent.trim();
+                completedTasks.push(taskText);
+            });
 
             localStorage.setItem('remainingTasks', JSON.stringify(remainingTasks));
             localStorage.setItem('completedTasks', JSON.stringify(completedTasks));
@@ -189,7 +205,7 @@
                 const todoItem = createTaskElement(taskText);
                 document.getElementById('remaining-list').appendChild(todoItem);
             });
-            
+
             completedTasks.forEach(taskText => {
                 const todoItem = createTaskElement(taskText);
                 todoItem.classList.add('completed');
@@ -199,14 +215,20 @@
 
         function createTaskElement(taskText) {
             const todoItem = document.createElement('li');
-            todoItem.textContent = taskText;
+
+            const taskSpan = document.createElement('span');
+            taskSpan.textContent = taskText;
+
             const deleteBtn = document.createElement('button');
             deleteBtn.textContent = 'DELETE';
             deleteBtn.onclick = () => {
                 todoItem.remove();
                 saveTasks();
             };
+
+            todoItem.appendChild(taskSpan);
             todoItem.appendChild(deleteBtn);
+
             todoItem.onclick = (e) => {
                 if (e.target !== deleteBtn) {
                     todoItem.classList.toggle('completed');
@@ -215,7 +237,14 @@
                     saveTasks();
                 }
             };
+
             return todoItem;
+        }
+
+        function deleteAllTasks() {
+            document.getElementById('remaining-list').innerHTML = '';
+            document.getElementById('completed-list').innerHTML = '';
+            saveTasks();
         }
     </script>
 </body>
