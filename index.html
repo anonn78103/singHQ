@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2Y1P90L5H9"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -19,6 +18,7 @@
     <meta name="robots" content="index, follow">
 
     <title>Organize Your Day with Our To-Do List App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <style>
         body {
@@ -61,15 +61,26 @@
         button {
             padding: 10px;
             border: none;
-            background: #28a745;
             color: white;
             border-radius: 5px;
             margin-left: 10px;
             cursor: pointer;
         }
 
-        button:hover {
+        #add-btn {
+            background: #28a745;
+        }
+
+        #add-btn:hover {
             background: #218838;
+        }
+
+        #delete-btn {
+            background: #dc3545;
+        }
+
+        #delete-btn:hover {
+            background: #c82333;
         }
 
         ul {
@@ -84,31 +95,13 @@
             border-radius: 5px;
             margin-bottom: 5px;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-        }
-
-        li span {
-            flex: 1;
+            align-items: center;
             overflow-wrap: anywhere;
         }
 
         li.completed {
             color: #aaa;
-        }
-
-        li button {
-            margin-left: 10px;
-            padding: 5px;
-            border: none;
-            background: #dc3545;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        li button:hover {
-            background: #c82333;
         }
 
         .task-section {
@@ -121,17 +114,68 @@
             justify-content: flex-end;
         }
 
-        #delete-btn {
-            padding: 10px;
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .popup-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .popup button {
+            margin: 10px;
+            padding: 10px 20px;
             border: none;
-            background: #dc3545;
-            color: white;
             border-radius: 5px;
             cursor: pointer;
         }
 
-        #delete-btn:hover {
+        .popup .confirm {
+            background: #dc3545;
+            color: white;
+        }
+
+        .popup .confirm:hover {
             background: #c82333;
+        }
+
+        .popup .cancel {
+            background: #6c757d;
+            color: white;
+        }
+
+        .popup .cancel:hover {
+            background: #5a6268;
+        }
+
+        .fa-plus,
+        .fa-trash {
+            font-size: 18px;
+        }
+
+        .delete-task {
+            background: transparent;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .delete-task:hover {
+            color: #c82333;
         }
     </style>
 </head>
@@ -141,7 +185,7 @@
         <h1 style="background-color:tomato;color:white;">To-Do List</h1>
         <div class="input-container">
             <input id="todo-input" placeholder="Enter new tasks">
-            <button id="add-btn">ADD</button>
+            <button id="add-btn"><i class="fa fa-plus"></i></button>
         </div>
         <div class="task-section">
             <h2>Pending Tasks:</h2>
@@ -152,12 +196,22 @@
             <ul id="completed-list"></ul>
         </div>
         <div class="delete-container">
-            <button id="delete-btn">DELETE ALL</button>
+            <button id="delete-btn" style="display:none;"><i class="fa fa-trash"></i></button>
         </div>
     </div>
+
+    <div id="popup" class="popup" style="display: none;">
+        <div class="popup-content">
+            <p>All tasks will be permanently deleted. Are you sure?</p>
+            <button class="confirm" id="confirm-delete">Delete</button>
+            <button class="cancel" id="cancel-delete">Cancel</button>
+        </div>
+    </div>
+
     <script>
         window.onload = function () {
             loadTasks();
+            toggleDeleteButton();
         };
 
         document.getElementById('add-btn').addEventListener('click', addTodo);
@@ -166,7 +220,9 @@
                 addTodo();
             }
         });
-        document.getElementById('delete-btn').addEventListener('click', deleteAllTasks);
+        document.getElementById('delete-btn').addEventListener('click', showPopup);
+        document.getElementById('confirm-delete').addEventListener('click', deleteAllTasks);
+        document.getElementById('cancel-delete').addEventListener('click', hidePopup);
 
         function addTodo() {
             const todoInput = document.getElementById('todo-input');
@@ -178,6 +234,7 @@
             todoInput.value = '';
 
             saveTasks();
+            toggleDeleteButton();
         }
 
         function saveTasks() {
@@ -185,16 +242,17 @@
             const completedTasks = [];
 
             document.querySelectorAll('#remaining-list li').forEach(item => {
-                const taskText = item.querySelector('span').textContent.trim();
+                const taskText = item.firstChild.textContent.trim();
                 remainingTasks.push(taskText);
             });
             document.querySelectorAll('#completed-list li').forEach(item => {
-                const taskText = item.querySelector('span').textContent.trim();
+                const taskText = item.firstChild.textContent.trim();
                 completedTasks.push(taskText);
             });
 
             localStorage.setItem('remainingTasks', JSON.stringify(remainingTasks));
             localStorage.setItem('completedTasks', JSON.stringify(completedTasks));
+            toggleDeleteButton();
         }
 
         function loadTasks() {
@@ -211,40 +269,60 @@
                 todoItem.classList.add('completed');
                 document.getElementById('completed-list').appendChild(todoItem);
             });
+
+            toggleDeleteButton();
         }
 
         function createTaskElement(taskText) {
             const todoItem = document.createElement('li');
+            todoItem.textContent = taskText;
 
-            const taskSpan = document.createElement('span');
-            taskSpan.textContent = taskText;
-
-            const deleteBtn = document.createElement('button');
-            deleteBtn.textContent = 'DELETE';
-            deleteBtn.onclick = () => {
+            const deleteButton = document.createElement('button');
+            deleteButton.classList.add('delete-task');
+            deleteButton.innerHTML = '<i class="fa fa-trash"></i>';
+            deleteButton.onclick = function (event) {
+                event.stopPropagation();
                 todoItem.remove();
                 saveTasks();
             };
 
-            todoItem.appendChild(taskSpan);
-            todoItem.appendChild(deleteBtn);
+            todoItem.appendChild(deleteButton);
 
-            todoItem.onclick = (e) => {
-                if (e.target !== deleteBtn) {
-                    todoItem.classList.toggle('completed');
-                    const targetList = todoItem.classList.contains('completed') ? 'completed-list' : 'remaining-list';
-                    document.getElementById(targetList).appendChild(todoItem);
-                    saveTasks();
-                }
+            todoItem.onclick = function () {
+                todoItem.classList.toggle('completed');
+                const targetList = todoItem.classList.contains('completed') ? 'completed-list' : 'remaining-list';
+                document.getElementById(targetList).appendChild(todoItem);
+                saveTasks();
             };
 
             return todoItem;
+        }
+
+        function showPopup() {
+            document.getElementById('popup').style.display = 'flex';
+        }
+
+        function hidePopup() {
+            document.getElementById('popup').style.display = 'none';
         }
 
         function deleteAllTasks() {
             document.getElementById('remaining-list').innerHTML = '';
             document.getElementById('completed-list').innerHTML = '';
             saveTasks();
+            hidePopup();
+        }
+
+        function toggleDeleteButton() {
+            const remainingTasks = document.querySelectorAll('#remaining-list li').length;
+            const completedTasks = document.querySelectorAll('#completed-list li').length;
+
+            const deleteButton = document.getElementById('delete-btn');
+            if (remainingTasks === 0 && completedTasks === 0) {
+                deleteButton.style.display = 'none';
+            } else {
+                deleteButton.style.display = 'inline-block';
+            }
         }
     </script>
 </body>
