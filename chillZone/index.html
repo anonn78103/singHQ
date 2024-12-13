@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Challenge yourself with our interactive sliding puzzle game! Can you solve the puzzle that 99% of people fail to complete? Play now and enjoy a fun mental workout!">
+    <meta name="robots" content="index, follow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <title>Sliding Puzzle Game - Test Your Mind!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #111; /* Majestic dark background */
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            height: auto;
+            overflow-x: hidden;
+        }
+
+        header {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        header h1 {
+            font-size: 48px;
+            margin: 0;
+            color: #ffcc00;
+            font-family: "Press Start 2P", system-ui;
+        }
+
+        header p {
+            font-size: 20px;
+            margin: 5px 0;
+            color: #ff4040;
+        }
+
+        .stats {
+            margin: 10px 0;
+        }
+
+        .controls {
+            margin: 20px 0;
+        }
+
+        .controls button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #ff3366;
+            color: #fff;
+        }
+
+        .controls button:hover {
+            background: #cc0055;
+        }
+
+        main {
+            display: grid;
+            grid-template-columns: repeat(4, 80px);
+            grid-gap: 5px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 5px;
+            border-radius: 10px;
+            transition: filter 0.3s;
+            margin-top: 40px;
+        }
+
+        .tile {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            background: #ffcc66;
+            border-radius: 5px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .empty {
+            background: #333;
+            cursor: default;
+        }
+
+        .win-message {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 10;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0.3s, opacity 0.3s;
+        }
+
+        .win-message.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .win-message h1 {
+            font-size: 48px;
+            margin: 10px 0;
+        }
+
+        .emoji-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .emoji {
+            font-size: 36px;
+            animation: bounce 1.5s ease-in-out infinite;
+        }
+
+        .win-message button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background: #ffcc00;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .win-message button:hover {
+            background: #ff9900;
+        }
+
+        #topScoresList {
+            list-style: none;
+            padding: 0;
+            color: #ffcc00;
+            font-family: "Press Start 2P", system-ui;
+            margin-top: 40px;
+        }
+
+        .mode-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .mode-buttons button {
+            padding: 15px 30px;
+            margin: 10px;
+            font-size: 20px;
+            border: none;
+            border-radius: 5px;
+            background: #ff0099;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .mode-buttons button:hover {
+            background: #cc0077;
+        }
+
+        @keyframes bounce {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Scrollable page */
+        .page-content {
+            margin-top: 60px;
+            padding: 20px;
+            overflow-y: auto;
+            height: 100%;
+            width: 100%;
+        }
+
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Sliding Puzzle Challenge</h1>
+        <p>Can you solve it? 90% of people can't!</p>
+    </header>
+    <div class="page-content">
+        <main id="puzzle"></main>
+
+        <section class="stats">
+            <p>Top Scores of the Day:</p>
+            <ul id="topScoresList">
+                <li>1. -</li>
+                <li>2. -</li>
+                <li>3. -</li>
+                <li>4. -</li>
+                <li>5. -</li>
+            </ul>
+            <p>Best Time: <span id="bestTime">-</span></p>
+        </section>
+
+        <section class="controls">
+            <button onclick="changePuzzleSize(2)">2x2</button>
+            <button onclick="changePuzzleSize(3)">3x3</button>
+            <button onclick="changePuzzleSize(4)">4x4</button>
+            <button onclick="changePuzzleSize(5)">5x5</button>
+            <button onclick="changePuzzleSize(6)">6x6</button>
+            <button onclick="solvePuzzle()">Solve Puzzle</button>
+        </section>
+
+        <section class="mode-buttons">
+            <button onclick="startGame()">Start Game</button>
+            <button onclick="solvePuzzle()">Solve Puzzle</button>
+            <button onclick="changePuzzleSize(4)">4x4 Mode</button>
+            <button onclick="changePuzzleSize(6)">6x6 Mode</button>
+        </section>
+    </div>
+
+    <section class="win-message" id="winMessage">
+        <h1>Congrats!</h1>
+        <button onclick="startGame()">Play Again</button>
+    </section>
+
+    <script>
+        const puzzleContainer = document.getElementById("puzzle");
+        const winMessage = document.getElementById("winMessage");
+        const bestTimeElement = document.getElementById("bestTime");
+        const topScoresList = document.getElementById("topScoresList");
+        let tiles = [];
+        let timer = null;
+        let timeElapsed = 0;
+        let size = 4; // Default puzzle size
+        let topScores = JSON.parse(localStorage.getItem('topScores')) || [0, 0, 0, 0, 0];
+
+        // Sound Effects
+        const yippeeAudio = new Audio('yippee.mp3');
+        const successAudio = new Audio('success.mp3');
+        const moveAudio = new Audio('move.mp3');
+
+        function startGame() {
+            winMessage.classList.remove("active");
+            tiles = Array.from({ length: size * size - 1 }, (_, i) => i + 1);
+            tiles.push(""); // Empty space
+            shuffleArray(tiles);
+            timeElapsed = 0;
+            updateTimer();
+            drawPuzzle();
+            startTimer();
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function drawPuzzle() {
+            puzzleContainer.innerHTML = "";
+            puzzleContainer.style.gridTemplateColumns = `repeat(${size}, 80px)`; // Adjust grid size dynamically
+            tiles.forEach((tile, index) => {
+                const tileDiv = document.createElement("div");
+                tileDiv.className = tile ? "tile" : "tile empty";
+                tileDiv.textContent = tile;
+                tileDiv.addEventListener("click", () => moveTile(index));
+                puzzleContainer.appendChild(tileDiv);
+            });
+        }
+
+        function moveTile(index) {
+            const emptyIndex = tiles.indexOf("");
+            const validMoves = [emptyIndex - 1, emptyIndex + 1, emptyIndex - size, emptyIndex + size];
+
+            if (validMoves.includes(index) && isAdjacent(index, emptyIndex)) {
+                [tiles[index], tiles[emptyIndex]] = [tiles[emptyIndex], tiles[index]];
+                drawPuzzle();
+                moveAudio.play();
+                if (isSolved()) {
+                    puzzleContainer.style.filter = "blur(5px)";
+                    stopTimer();
+                    saveTopScores();
+                    successAudio.play();
+                    yippeeAudio.play();
+                    winMessage.classList.add("active");
+                }
+            }
+        }
+
+        function isAdjacent(index1, index2) {
+            const row1 = Math.floor(index1 / size);
+            const col1 = index1 % size;
+            const row2 = Math.floor(index2 / size);
+            const col2 = index2 % size;
+            return (Math.abs(row1 - row2) + Math.abs(col1 - col2)) === 1;
+        }
+
+        function isSolved() {
+            for (let i = 0; i < tiles.length - 1; i++) {
+                if (tiles[i] !== i + 1) return false;
+            }
+            return tiles[tiles.length - 1] === "";
+        }
+
+        function startTimer() {
+            stopTimer();
+            timer = setInterval(() => {
+                timeElapsed++;
+                updateTimer();
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (timer) clearInterval(timer);
+        }
+
+        function updateTimer() {
+            const minutes = Math.floor(timeElapsed / 60);
+            const seconds = timeElapsed % 60;
+            bestTimeElement.textContent = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+        }
+
+        function saveTopScores() {
+            topScores.push(timeElapsed);
+            topScores.sort((a, b) => a - b);
+            topScores = topScores.slice(0, 5);
+            localStorage.setItem('topScores', JSON.stringify(topScores));
+            updateTopScores();
+        }
+
+        function updateTopScores() {
+            topScoresList.innerHTML = topScores.map((score, index) => `<li>${index + 1}. ${formatTime(score)}</li>`).join('');
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secondsFormatted = seconds % 60;
+            return `${minutes}:${secondsFormatted.toString().padStart(2, '0')}`;
+        }
+
+        function solvePuzzle() {
+            tiles = Array.from({ length: size * size - 1 }, (_, i) => i + 1);
+            tiles.push("");
+            drawPuzzle();
+            stopTimer();
+            puzzleContainer.style.filter = "blur(5px)";
+            winMessage.classList.add("active");
+        }
+
+        function changePuzzleSize(newSize) {
+            size = newSize;
+            startGame();
+        }
+
+        startGame();
+        updateTopScores();
+    </script>
+</body>
+
+</html>
