@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+   <link rel="icon" href="./to_doo.png">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2Y1P90L5H9"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -18,7 +19,6 @@
     <meta name="robots" content="index, follow">
 
     <title>Organize Your Day with Our To-Do List App</title>
-    <link rel="icon" href="to_doo.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <style>
@@ -41,6 +41,12 @@
             width: 600px;
             max-height: 80vh;
             overflow-y: auto;
+            transition: filter 0.3s ease;
+        }
+
+        .blurred {
+            filter: blur(4px);
+            pointer-events: none;
         }
 
         h1 {
@@ -178,6 +184,10 @@
         .delete-task:hover {
             color: #c82333;
         }
+
+        #popup .popup-content p {
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -203,7 +213,7 @@
 
     <div id="popup" class="popup" style="display: none;">
         <div class="popup-content">
-            <p><b></b>All tasks will be permanently deleted. Are you sure?</b></p>
+            <p>All tasks will be permanently deleted. Are you sure?</p>
             <button class="confirm" id="confirm-delete">Delete</button>
             <button class="cancel" id="cancel-delete">Cancel</button>
         </div>
@@ -301,10 +311,12 @@
 
         function showPopup() {
             document.getElementById('popup').style.display = 'flex';
+            document.querySelector('.container').classList.add('blurred');
         }
 
         function hidePopup() {
             document.getElementById('popup').style.display = 'none';
+            document.querySelector('.container').classList.remove('blurred');
         }
 
         function deleteAllTasks() {
