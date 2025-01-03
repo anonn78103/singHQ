@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨Biuuuuuu✨</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Great+Vibes&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <style>
+        body {
+            background: linear-gradient(to bottom right, #fbe0e6, #f7c8e1);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+        }
+
+        #main-content {
+            text-align: center;
+            z-index: 2;
+            position: relative;
+        }
+
+        h1 {
+            font-family: 'Great Vibes', cursive;
+            color: #ff4f82;
+            font-size: 3rem;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        p {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.25rem;
+            color: #ff8bb0;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-mystery {
+            background-color: #ff6d8d;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.5rem;
+            font-family: 'Poppins', sans-serif;
+            border-radius: 25px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            color: white;
+            transition: transform 0.2s, box-shadow 0.2s;
+            animation: pulse 2s infinite;
+        }
+
+        .btn-mystery:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .hidden-page,
+        .new-page {
+            display: none;
+            text-align: center;
+            z-index: 2;
+            position: relative;
+        }
+
+        .hidden-page img,
+        .new-page img {
+            width: 300px;
+            margin-top: 20px;
+        }
+
+        .dynamic-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 182, 193, 0.3), rgba(219, 112, 147, 0.5));
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .dynamic-bg .star {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: #fff;
+            border-radius: 50%;
+            animation: float 5s infinite ease-in-out;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .floating-hearts {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(255, 255, 255, 0.7);
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            animation: floatHeart 5s linear infinite;
+        }
+
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(100vh) scale(0.5);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-10vh) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .name-styling {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2rem;
+            color: #ff6b81;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+            margin-top: 20px;
+        }
+
+        .quote {
+            color: #ff4c79;
+            font-style: italic;
+            font-size: 1.3rem;
+            margin-top: 10px;
+        }
+
+        .new-page h1 {
+            font-family: 'Great Vibes', cursive;
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .new-page p {
+            color: #ff5e5e;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+
+<body class="animate__animated animate__fadeIn">
+
+    <div class="dynamic-bg">
+        <!-- Stars -->
+        <div class="star" style="top: 20%; left: 30%;"></div>
+        <div class="star" style="top: 40%; left: 60%;"></div>
+        <div class="star" style="top: 70%; left: 50%;"></div>
+        <div class="star" style="top: 10%; left: 80%;"></div>
+        <div class="star" style="top: 30%; left: 20%;"></div>
+        <div class="star" style="top: 50%; left: 10%;"></div>
+        <div class="star" style="top: 80%; left: 70%;"></div>
+    </div>
+
+    <div id="main-content">
+        <h1 class="animate__animated animate__bounceInDown">Welcome to the Mystery Site! 💖</h1>
+        <p class="animate__animated animate__fadeInUp">A little magic awaits you! ✨</p>
+        <button class="btn btn-mystery animate__animated" id="mysteryButton">Unveil the Magic! 🌌</button>
+    </div>
+
+    <div class="hidden-page" id="hiddenPage">
+        <h1 class="animate__animated animate__tada">I Love You 💕</h1>
+        <h2 class="name-styling animate__animated animate__fadeIn">🤍Biuuu🤍</h2>
+        <p class="quote animate__animated animate__zoomIn">"In Your Smily, I See Something More Beautiful Than The
+        Stars." ╰⁠(⁠*⁠´⁠︶⁠`⁠*⁠)⁠╯</p>
+        <img src="https://media1.tenor.com/m/v7PPaFYwgAgAAAAd/falling-stars-cutecore.gif" alt="Heart GIF"
+            class="rounded mx-auto d-block">
+        <button class="btn btn-primary mt-3" id="goBackButton">Go Back?)</button>
+    </div>
+
+    <div class="new-page" id="newPage">
+        <h1>There is no going back, inem. 🙃</h1>
+        <p>💋Muaaaaaaah💋</p>
+        <img src="https://media.tenor.com/GHKtnDdlVNIAAAAM/happy-smile-green.gif" alt="Happy GIF">
+    </div>
+
+    <script>
+        const mysteryButton = document.getElementById('mysteryButton');
+        const goBackButton = document.getElementById('goBackButton');
+        const mainContent = document.getElementById('main-content');
+        const hiddenPage = document.getElementById('hiddenPage');
+        const newPage = document.getElementById('newPage');
+        const body = document.querySelector('body');
+
+        function createHearts() {
+            for (let i = 0; i < 50; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'floating-hearts';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                heart.style.animationDuration = 5 + Math.random() * 5 + 's';
+                body.appendChild(heart);
+            }
+        }
+
+        mysteryButton.addEventListener('click', () => {
+            mainContent.style.display = 'none';
+            hiddenPage.style.display = 'block';
+            createHearts();
+        });
+
+        goBackButton.addEventListener('click', () => {
+            hiddenPage.style.display = 'none';
+            newPage.style.display = 'block';
+        });
+    </script>
+</body>
+
+</html>
