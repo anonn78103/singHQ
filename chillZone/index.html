@@ -125,13 +125,12 @@
             opacity: 1;
         }
 
-       .win-message p {
-    font-size: 48px;
-    font-weight: bold;
-    text-align: center;
-    color: #ffcc00;
-}
-
+        .win-message p {
+            font-size: 48px;
+            font-weight: bold;
+            text-align: center;
+            color: #ffcc00;
+        }
 
         .emoji-container {
             display: flex;
@@ -200,7 +199,7 @@
         }
 
         .best-time {
-          color: neon rgb(240, 76, 11);
+            color: neon rgb(240, 76, 11);
             font-size: 24px;
             font-weight: bold;
             text-shadow: 0 0 10px #ff6600, 0 0 20px #ff6600;
@@ -247,13 +246,15 @@
 
 <body>
     <header>
-        <h1>Sliding Puzzle Challenge</h1> 
+        <h1>Sliding Puzzle Challenge</h1>
         <p> </p>
         <p>Can you solve it? 90% of people can't!</p>
     </header>
     <div class="page-content">
         <section class="stats">
-          <h2>  <p>Best Time: <span id="bestTime" class="best-time">-</span></p> </h2>
+            <h2>
+                <p>Best Time: <span id="bestTime" class="best-time">-</span></p>
+            </h2>
             <p class="duration">Time Taken: <span id="timer">00:00</span></p>
         </section>
 
@@ -309,7 +310,7 @@
             winMessage.classList.remove("active");
             puzzleContainer.style.filter = "none";
             tiles = Array.from({ length: currentPuzzleSize * currentPuzzleSize - 1 }, (_, i) => i + 1);
-            tiles.push("");
+            tiles.push(0);
             shuffleUntilSolvable(tiles);
             timeElapsed = 0;
             updateTimer();
@@ -324,23 +325,11 @@
             }
         }
 
-        function isSolvable() {
-            const inversions = countInversions(tiles);
-            if (currentPuzzleSize % 2 === 1) {
-                return inversions % 2 === 0;
-            } else {
-                const blankRow = Math.floor(tiles.indexOf("") / currentPuzzleSize);
-                const inversionsIsEven = inversions % 2 === 0;
-                const blankRowIsEven = blankRow % 2 === 0;
-                return (inversionsIsEven && blankRowIsEven) || (!inversionsIsEven && !blankRowIsEven);
-            }
-        }
-
         function countInversions(array) {
             let inversions = 0;
             for (let i = 0; i < array.length; i++) {
                 for (let j = i + 1; j < array.length; j++) {
-                    if (array[i] && array[j] && array[i] > array[j]) {
+                    if (array[j] && array[i] && array[i] > array[j]) {
                         inversions++;
                     }
                 }
@@ -348,89 +337,83 @@
             return inversions;
         }
 
-        function shuffleUntilSolvable(tiles) {
+        function isSolvable(array) {
+            const inversions = countInversions(array);
+            if (currentPuzzleSize % 2 === 1) {
+                return inversions % 2 === 0;
+            } else {
+                const emptyRow = Math.floor(array.indexOf(0) / currentPuzzleSize);
+                return (emptyRow % 2 === 0) === (inversions % 2 !== 0);
+            }
+        }
+
+        function shuffleUntilSolvable(array) {
             do {
-                shuffleArray(tiles);
-            } while (!isSolvable());
+                shuffleArray(array);
+            } while (!isSolvable(array));
         }
 
         function drawPuzzle() {
             puzzleContainer.innerHTML = "";
-            puzzleContainer.style.gridTemplateColumns = `repeat(${currentPuzzleSize}, 80px)`;
+            puzzleContainer.style.gridTemplateColumns = `repeat(${currentPuzzleSize}, 1fr)`;
             tiles.forEach((tile, index) => {
-                const tileDiv = document.createElement("div");
-                tileDiv.className = tile ? "tile" : "tile empty";
-                tileDiv.textContent = tile;
-                tileDiv.addEventListener("click", () => moveTile(index));
-                puzzleContainer.appendChild(tileDiv);
+                const tileElement = document.createElement("div");
+                tileElement.className = tile === 0 ? "tile empty" : "tile";
+                tileElement.textContent = tile || "";
+                tileElement.addEventListener("click", () => moveTile(index));
+                puzzleContainer.appendChild(tileElement);
             });
         }
 
         function moveTile(index) {
-            const emptyIndex = tiles.indexOf("");
-            const validMoves = [emptyIndex - 1, emptyIndex + 1, emptyIndex - currentPuzzleSize, emptyIndex + currentPuzzleSize];
+            const emptyIndex = tiles.indexOf(0);
+            const distance = Math.abs(emptyIndex - index);
 
-            if (validMoves.includes(index) && isAdjacent(index, emptyIndex)) {
-                [tiles[index], tiles[emptyIndex]] = [tiles[emptyIndex], tiles[index]];
-                drawPuzzle();
+            if (distance === 1 || distance === currentPuzzleSize) {
+                [tiles[emptyIndex], tiles[index]] = [tiles[index], tiles[emptyIndex]];
                 moveSound.play();
-                if (isSolved()) {
-                    puzzleContainer.style.filter = "blur(5px)";
-                    stopTimer();
-                    winMessage.classList.add("active");
-                    winSound.play();
-                    updateBestTime(timeElapsed);
-                }
+                drawPuzzle();
+                checkWin();
             }
         }
 
-        function isAdjacent(index1, index2) {
-            const row1 = Math.floor(index1 / currentPuzzleSize);
-            const col1 = index1 % currentPuzzleSize;
-            const row2 = Math.floor(index2 / currentPuzzleSize);
-            const col2 = index2 % currentPuzzleSize;
-            return (Math.abs(row1 - row2) + Math.abs(col1 - col2)) === 1;
+        function checkWin() {
+            if (tiles.slice(0, -1).every((tile, i) => tile === i + 1)) {
+                clearInterval(timer);
+                winSound.play();
+                puzzleContainer.style.filter = "blur(5px)";
+                winMessage.classList.add("active");
+                saveBestTime();
+            }
         }
 
-        function isSolved() {
-            for (let i = 0; i < tiles.length - 1; i++) {
-                if (tiles[i] !== i + 1) return false;
+        function saveBestTime() {
+            const bestTime = localStorage.getItem(`bestTime_${currentPuzzleSize}`);
+            if (!bestTime || timeElapsed < bestTime) {
+                localStorage.setItem(`bestTime_${currentPuzzleSize}`, timeElapsed);
+                bestTimeElement.textContent = formatTime(timeElapsed);
             }
-            return tiles[tiles.length - 1] === "";
         }
 
         function startTimer() {
-            stopTimer();
+            clearInterval(timer);
             timer = setInterval(() => {
                 timeElapsed++;
                 updateTimer();
             }, 1000);
         }
 
-        function stopTimer() {
-            if (timer) clearInterval(timer);
-        }
-
         function updateTimer() {
-            const minutes = Math.floor(timeElapsed / 60);
-            const seconds = timeElapsed % 60;
-            timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+            timerElement.textContent = formatTime(timeElapsed);
         }
 
-        function updateBestTime(newTime) {
-            const previousBestTime = parseInt(localStorage.getItem(`bestTime_${currentPuzzleSize}`), 10);
-            if (isNaN(previousBestTime) || newTime < previousBestTime) {
-                localStorage.setItem(`bestTime_${currentPuzzleSize}`, newTime);
-                bestTimeElement.textContent = formatTime(newTime);
-            }
-        }
-
-        function changePuzzleSize(newSize) {
-            currentPuzzleSize = newSize;
+        function changePuzzleSize(size) {
+            currentPuzzleSize = size;
             loadBestTime();
             startGame();
         }
 
+        // Initialize
         loadBestTime();
         startGame();
     </script>
