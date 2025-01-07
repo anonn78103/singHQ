@@ -38,7 +38,7 @@
         header p {
             font-size: 20px;
             margin: 5px 0;
-            color: #ff4040; /* Normal red for "Test Your Skills" */
+            color: #ff4040;
         }
 
         .stats {
@@ -51,6 +51,7 @@
 
         .stats h2 {
             margin: 5px;
+            color: #fff;
         }
 
         .controls {
@@ -91,7 +92,7 @@
             font-size: 18px;
             font-weight: bold;
             border: 1px solid #555;
-            background: #f0f0f0; /* Light gray for puzzle boxes */
+            background: #ffcc00;
             color: #000;
         }
 
@@ -119,12 +120,6 @@
             text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00cc00;
         }
 
-        .best-time {
-            color: rgb(240, 76, 11);
-            font-size: 24px;
-            font-weight: bold;
-        }
-
         .mode-buttons {
             display: flex;
             justify-content: center;
@@ -138,13 +133,61 @@
             font-size: 18px;
             border: none;
             border-radius: 5px;
-            background: #ff0099;
+            background: #db0b54;
             color: #fff;
             cursor: pointer;
         }
 
         .mode-buttons button:hover {
             background: #cc0077;
+        }
+
+        .start-game {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .start-game button {
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            background: #cc0077;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .start-game button:hover {
+            background: #ee0968;
+        }
+
+        .congrats {
+            text-align: center;
+            margin-top: 20px;
+            color: #ffcc00;
+            font-size: 36px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .play-again {
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .play-again button {
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            background: #28a745;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .play-again button:hover {
+            background: #218838;
         }
 
         @media (max-width: 600px) {
@@ -166,7 +209,8 @@
                 padding: 8px 16px;
             }
 
-            .mode-buttons button {
+            .mode-buttons button,
+            .start-game button {
                 padding: 10px 20px;
                 font-size: 14px;
             }
@@ -189,35 +233,86 @@
         <button onclick="startGame('medium')">Medium</button>
         <button onclick="startGame('hard')">Hard</button>
     </div>
-
+    <div class="start-game">
+        <button onclick="startGame('easy')">Start Game</button>
+    </div>
+    <div class="congrats" id="congratsMessage">Congrats! 🎉🎉🥳</div>
+    <div class="play-again" id="playAgain">
+        <button onclick="startGame('easy')">Play Again</button>
+    </div>
+    <audio id="successSound" src="https://sinqhq.site/chillZone/success.mp3"></audio>
     <script>
+        let timerInterval;
+        let timeElapsed = 0;
+
         function startGame(difficulty) {
+            clearInterval(timerInterval);
+            timeElapsed = 0;
+            updateTimerDisplay();
+
+            document.getElementById('congratsMessage').style.display = 'none';
+            document.getElementById('playAgain').style.display = 'none';
+
             const grid = document.getElementById('sudokuGrid');
             grid.innerHTML = '';
 
-            // Generate Sudoku grid (mockup example)
             for (let row = 0; row < 9; row++) {
                 for (let col = 0; col < 9; col++) {
                     const cell = document.createElement('div');
                     cell.classList.add('cell');
+
                     if (row % 3 === 2 && col % 3 === 2) {
                         cell.classList.add('block');
                     }
 
-                    // Add input field for empty cells
                     const input = document.createElement('input');
                     input.type = 'text';
                     input.maxLength = 1;
-                    if (Math.random() < 0.3) input.value = Math.ceil(Math.random() * 9);
-                    else input.value = '';
+
+                    if (Math.random() < (difficulty === 'easy' ? 0.4 : difficulty === 'medium' ? 0.3 : 0.2)) {
+                        input.value = Math.ceil(Math.random() * 9);
+                        input.disabled = true;
+                    } else {
+                        input.value = '';
+                    }
 
                     cell.appendChild(input);
                     grid.appendChild(cell);
                 }
             }
+
+            startTimer();
         }
 
-        // Default to easy mode on page load
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeElapsed++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeElapsed / 60).toString().padStart(2, '0');
+            const seconds = (timeElapsed % 60).toString().padStart(2, '0');
+            document.getElementById('timer').textContent = `${minutes}:${seconds}`;
+        }
+
+        function checkSolution() {
+            const inputs = document.querySelectorAll('.cell input');
+            const isSolved = Array.from(inputs).every(input => input.value && !isNaN(input.value) && !input.disabled);
+
+            if (isSolved) {
+                clearInterval(timerInterval);
+                document.getElementById('successSound').play();
+                document.getElementById('congratsMessage').style.display = 'block';
+                document.getElementById('playAgain').style.display = 'block';
+            }
+        }
+
+        document.addEventListener('input', () => {
+            setTimeout(checkSolution, 100);
+        });
+
         window.onload = () => startGame('easy');
     </script>
 </body>
