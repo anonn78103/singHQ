@@ -2,9 +2,9 @@
 <html lang="en">
 
 <head>
-   <link rel="icon" href="./to_doo.png">
-    <link rel="icon" href="/to_doo.png" type="image/png"> 
-    <link rel="manifest" href="/manifest.json"> 
+    <link rel="icon" href="./to_doo.png">
+    <link rel="icon" href="/to_doo.png" type="image/png">
+    <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" sizes="180x180" href="/180.png">
     <link rel="icon" sizes="192x192" href="/192.png">
     <link rel="icon" sizes="512x512" href="/512.jpg">
@@ -36,6 +36,7 @@
             align-items: center;
             height: 100vh;
             margin: 0;
+            position: relative;
         }
 
         .container {
@@ -193,6 +194,71 @@
         #popup .popup-content p {
             font-weight: bold;
         }
+
+        /* Globe Icon */
+        .globe-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            border-radius: 50%;
+            padding: 15px;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .globe-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Hidden Menu */
+        .icon-menu {
+            display: none;
+            position: fixed;
+            bottom: 70px;
+            right: 20px;
+            background: #fff;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .icon-menu a {
+            display: block;
+            color: #333;
+            font-size: 24px;
+            margin: 10px 0;
+            text-align: center;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .icon-menu a:hover {
+            color: #4CAF50;
+        }
+
+        /* Show menu on hover */
+        .globe-btn:hover+.icon-menu,
+        .icon-menu:hover {
+            display: block;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .globe-btn {
+                bottom: 10px;
+                right: 10px;
+                padding: 12px;
+            }
+
+            .icon-menu {
+                bottom: 60px;
+                right: 10px;
+            }
+        }
     </style>
 </head>
 
@@ -222,6 +288,13 @@
             <button class="confirm" id="confirm-delete">Delete</button>
             <button class="cancel" id="cancel-delete">Cancel</button>
         </div>
+    </div>
+
+    <div class="globe-btn"><i class="fa fa-globe"></i></div>
+    <div class="icon-menu">
+        <a href="https://singhq.site" ><i>🏠</i></a>
+        <a href="https://singhq.site/menu" ><i>🗺️</i></a>
+        <a href="https://singhq.site/chillZone"><i>🎮</i></a>
     </div>
 
     <script>
