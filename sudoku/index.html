@@ -1,1 +1,268 @@
-yooo beautiful!
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Challenge yourself with our interactive Sudoku game! Can you solve it?">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <title>Sudoku Challenge</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #111;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        header h1 {
+            font-size: 36px;
+            color: #ffcc00;
+            font-family: "Press Start 2P", system-ui;
+        }
+
+        .stats {
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .stats p {
+            font-size: 18px;
+            margin: 5px 0;
+        }
+
+        .neon {
+            color: #0ff;
+            text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 30px #00f, 0 0 40px #00f;
+        }
+
+        .controls {
+            margin: 20px 0;
+        }
+
+        .controls button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #ff3366;
+            color: #fff;
+        }
+
+        .controls button:hover {
+            background: #cc0055;
+        }
+
+        .sudoku-grid {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            gap: 2px;
+            margin: 20px 0;
+            background-color: #333;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .cell {
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            border: 1px solid #333;
+            background-color: #ffcc66;
+            color: #333;
+        }
+
+        .cell input {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            border: none;
+            background: transparent;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .cell input:focus {
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Add borders to separate 3x3 grids */
+        .cell:nth-child(3n) {
+            border-right: 3px solid #333;
+        }
+
+        .cell:nth-child(n + 19):nth-child(-n + 27),
+        .cell:nth-child(n + 46):nth-child(-n + 54),
+        .cell:nth-child(n + 73):nth-child(-n + 81) {
+            border-bottom: 3px solid #333;
+        }
+
+        .win-message {
+            margin-top: 20px;
+            text-align: center;
+            color: #00ff00;
+        }
+
+        .win-message.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Sudoku Challenge</h1>
+        <p>Test your skills across difficulties!</p>
+    </header>
+
+    <section class="stats">
+        <p>Best Time: <span id="bestTime" class="neon">-</span></p>
+        <p>Time Taken: <span id="timer" class="neon">00:00</span></p>
+    </section>
+
+    <section class="controls">
+        <button onclick="startGame('easy')">Easy</button>
+        <button onclick="startGame('medium')">Medium</button>
+        <button onclick="startGame('hard')">Hard</button>
+        <button onclick="startGame()">Refresh Puzzle</button>
+    </section>
+
+    <div class="sudoku-grid" id="sudokuGrid"></div>
+
+    <div class="win-message" id="winMessage" style="display: none;">
+        <h2>🎉 Congratulations! You solved the puzzle! 🎉</h2>
+    </div>
+
+    <script>
+        let gridSize = 9; // Fixed grid size for 9x9 Sudoku
+        let puzzle = [];
+        let timer = null;
+        let timeElapsed = 0;
+        let difficulty = "medium"; // Default difficulty
+
+        const sudokuGrid = document.getElementById("sudokuGrid");
+        const timerElement = document.getElementById("timer");
+        const bestTimeElement = document.getElementById("bestTime");
+        const winMessage = document.getElementById("winMessage");
+
+        function startGame(selectedDifficulty = difficulty) {
+            difficulty = selectedDifficulty;
+            winMessage.style.display = "none";
+            generatePuzzle(difficulty);
+            drawPuzzle();
+            timeElapsed = 0;
+            updateTimer();
+            startTimer();
+        }
+
+        function generatePuzzle(difficulty) {
+            puzzle = Array.from({ length: gridSize }, () => Array(gridSize).fill(0));
+
+            let prefilled = 0;
+            if (difficulty === "easy") prefilled = Math.floor(gridSize * gridSize * 0.5);
+            else if (difficulty === "medium") prefilled = Math.floor(gridSize * gridSize * 0.4);
+            else if (difficulty === "hard") prefilled = Math.floor(gridSize * gridSize * 0.3);
+
+            for (let i = 0; i < prefilled; i++) {
+                const row = Math.floor(Math.random() * gridSize);
+                const col = Math.floor(Math.random() * gridSize);
+                if (puzzle[row][col] === 0) {
+                    puzzle[row][col] = Math.ceil(Math.random() * gridSize);
+                }
+            }
+        }
+
+        function drawPuzzle() {
+            sudokuGrid.innerHTML = "";
+            puzzle.forEach((row, rowIndex) => {
+                row.forEach((value, colIndex) => {
+                    const cell = document.createElement("div");
+                    cell.className = "cell";
+
+                    if (value !== 0) {
+                        cell.textContent = value;
+                    } else {
+                        const input = document.createElement("input");
+                        input.type = "text";
+                        input.maxLength = 1;
+                        input.oninput = (e) => handleInput(e, rowIndex, colIndex);
+                        cell.appendChild(input);
+                    }
+
+                    sudokuGrid.appendChild(cell);
+                });
+            });
+        }
+
+        function handleInput(e, row, col) {
+            const value = parseInt(e.target.value);
+            if (!isNaN(value) && value >= 1 && value <= gridSize) {
+                puzzle[row][col] = value;
+                checkWin();
+            } else {
+                e.target.value = "";
+            }
+        }
+
+        function checkWin() {
+            const isSolved = puzzle.every(row => row.every(cell => cell !== 0));
+            if (isSolved) {
+                clearInterval(timer);
+                winMessage.style.display = "block";
+                saveBestTime();
+            }
+        }
+
+        function startTimer() {
+            clearInterval(timer);
+            timer = setInterval(() => {
+                timeElapsed++;
+                updateTimer();
+            }, 1000);
+        }
+
+        function updateTimer() {
+            const minutes = Math.floor(timeElapsed / 60);
+            const seconds = timeElapsed % 60;
+            timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function saveBestTime() {
+            const bestTime = localStorage.getItem(`bestTime_${difficulty}`);
+            if (!bestTime || timeElapsed < parseInt(bestTime)) {
+                localStorage.setItem(`bestTime_${difficulty}`, timeElapsed);
+                bestTimeElement.textContent = formatTime(timeElapsed);
+            }
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            return `${minutes.toString().padStart(2, '0')}:${(seconds % 60).toString().padStart(2, '0')}`;
+        }
+
+        function loadBestTime() {
+            const bestTime = localStorage.getItem(`bestTime_${difficulty}`);
+            bestTimeElement.textContent = bestTime ? formatTime(bestTime) : "-";
+        }
+
+        loadBestTime();
+        startGame();
+    </script>
+</body>
+
+</html>
