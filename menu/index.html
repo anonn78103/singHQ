@@ -108,6 +108,21 @@
         footer a:hover {
             text-decoration: underline;
         }
+
+        .game-options {
+            padding-left: 20px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .game-options a {
+            background-color: #ff7f00;
+            margin-top: 5px;
+            display: inline-block;
+            padding: 10px;
+            text-decoration: none;
+            color: white;
+        }
     </style>
 </head>
 
@@ -120,6 +135,14 @@
     <div class="container">
         <div class="section">
             <h2><a href="https://singhq.site">Home 🏠</a></h2>
+        </div>
+
+        <div class="section">
+            <h2><a href="#" onclick="toggleGames()">Games 🎮</a></h2>
+            <div class="game-options" id="gameOptions">
+                <a href="https://singhq.site/chillZone">Sliding Puzzle 🧩</a><br>
+                <a href="https://singhq.site/sudoku">Sudoku 🔢</a>
+            </div>
         </div>
 
         <div class="section">
@@ -143,6 +166,16 @@
         <p>© 2024-2025 <a href="https://singhq.site">SingHQ</a>. All rights reserved.</p>
     </footer>
 
+    <script>
+        function toggleGames() {
+            var gameOptions = document.getElementById("gameOptions");
+            if (gameOptions.style.display === "none" || gameOptions.style.display === "") {
+                gameOptions.style.display = "block";
+            } else {
+                gameOptions.style.display = "none";
+            }
+        }
+    </script>
 </body>
 
 </html>
