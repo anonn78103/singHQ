@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Page</title>
+    <style>
+        body,
+        h1,
+        h2,
+        p {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(120deg, #ff4500, #ffa500);
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.4);
+            border-bottom: 2px solid #ffbf00;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        header h1 {
+            font-size: 3rem;
+            text-transform: uppercase;
+            text-align: center;
+            color: white;
+            margin-right: 10px;
+        }
+
+        header img {
+            height: 120px;
+            width: auto;
+            margin-top: 15px;
+            margin-left: -30px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: left;
+        }
+
+        .section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .section h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #ffbf00;
+        }
+
+        .section a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #ffbf00;
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .section a:hover {
+            background-color: #ff4500;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: white;
+            background: rgba(0, 0, 0, 0.4);
+            border-top: 2px solid #ffbf00;
+        }
+
+        footer p {
+            margin: 0;
+        }
+
+        footer a {
+            color: white;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>WELCOME TO SINGHQ</h1>
+        <img src="https://singhq.site/512.png" alt="SingHQ Logo">
+    </header>
+
+    <div class="container">
+        <div class="section">
+            <h2><a href="https://singhq.site">Home 🏠</a></h2>
+        </div>
+
+        <div class="section">
+            <h2><a href="https://singhq.site/menu/aboutUs">About Us ℹ️</a></h2>
+        </div>
+
+        <div class="section">
+            <h2><a href="https://singhq.site/menu/contactUs">Contact Us 📩</a></h2>
+        </div>
+
+        <div class="section">
+            <h2><a href="https://singhq.site/menu/privacyPolicy">Privacy Policy 🛡️</a></h2>
+        </div>
+
+        <div class="section">
+            <h2><a href="https://singhq.site/menu/t&c">Terms and Conditions 📜</a></h2>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2024-2025 <a href="https://singhq.site">SingHQ</a>. All rights reserved.</p>
+    </footer>
+
+</body>
+
+</html>
