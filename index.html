@@ -195,7 +195,6 @@
             font-weight: bold;
         }
 
-        /* Globe Icon */
         .globe-btn {
             position: fixed;
             bottom: 20px;
@@ -214,7 +213,6 @@
             transform: scale(1.1);
         }
 
-        /* Hidden Menu */
         .icon-menu {
             display: none;
             position: fixed;
@@ -244,7 +242,7 @@
         .icon-menu:hover {
             display: block;
         }
- 
+
         @media (max-width: 768px) {
             .globe-btn {
                 bottom: 10px;
@@ -290,12 +288,14 @@
 
     <div class="globe-btn"><i class="fa fa-globe"></i></div>
     <div class="icon-menu">
-        <a href="https://singhq.site" >🏠</a>
-        <a href="https://singhq.site/menu" >🗺️</a>
+        <a href="https://singhq.site">🏠</a>
+        <a href="https://singhq.site/menu">🗺️</a>
         <a href="https://singhq.site/chillZone">🎮</a>
     </div>
 
     <script>
+        let globeClickCount = 0;
+
         window.onload = function () {
             loadTasks();
             toggleDeleteButton();
@@ -310,6 +310,15 @@
         document.getElementById('delete-btn').addEventListener('click', showPopup);
         document.getElementById('confirm-delete').addEventListener('click', deleteAllTasks);
         document.getElementById('cancel-delete').addEventListener('click', hidePopup);
+
+        document.querySelector('.globe-btn').addEventListener('click', function () {
+            globeClickCount++;
+            if (globeClickCount === 7) {
+                window.location.href = "https://pass-vault-rust.vercel.app/";
+            } else {
+                document.querySelector('.icon-menu').classList.toggle('show');
+            }
+        });
 
         function addTodo() {
             const todoInput = document.getElementById('todo-input');
