@@ -1,42 +1,51 @@
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+ 
+
 <url>
-<loc>https://singhq.site/</loc>
-<lastmod>2025-01-27T10:47:35+00:00</lastmod>
-<priority>1.00</priority>
+  <loc>https://singhq.site/</loc>
+  <lastmod>2025-01-27T10:47:35+00:00</lastmod>
+  <priority>1.00</priority>
 </url>
 <url>
-<loc>https://singhq.site/menu/</loc>
-<lastmod>2025-01-27T10:47:35+00:00</lastmod>
-<priority>0.80</priority>
+  <loc>https://singhq.site/menu/</loc>
+  <lastmod>2025-01-27T10:47:35+00:00</lastmod>
+  <priority>0.80</priority>
 </url>
 <url>
-<loc>https://singhq.site/chillZone/</loc>
-<lastmod>2025-01-27T10:47:35+00:00</lastmod>
-<priority>0.80</priority>
+  <loc>https://singhq.site/chillZone/</loc>
+  <lastmod>2025-01-27T10:47:35+00:00</lastmod>
+  <priority>0.80</priority>
 </url>
 <url>
-<loc>https://singhq.site/sudoku/</loc>
-<lastmod>2025-01-27T10:47:35+00:00</lastmod>
-<priority>0.64</priority>
+  <loc>https://singhq.site/sudoku/</loc>
+  <lastmod>2025-01-27T10:47:35+00:00</lastmod>
+  <priority>0.64</priority>
 </url>
 <url>
-<loc>https://singhq.site/menu/aboutUs/</loc>
-<lastmod>2025-01-27T10:47:35+00:00</lastmod>
-<priority>0.64</priority>
+  <loc>https://singhq.site/menu/aboutUs/</loc>
+  <lastmod>2025-01-27T10:47:35+00:00</lastmod>
+  <priority>0.64</priority>
 </url>
 <url>
-<loc>https://singhq.site/menu/contactUs/</loc>
-<lastmod>2025-01-27T10:47:35+00:00</lastmod>
-<priority>0.64</priority>
+  <loc>https://singhq.site/menu/contactUs/</loc>
+  <lastmod>2025-01-27T10:47:35+00:00</lastmod>
+  <priority>0.64</priority>
 </url>
 <url>
-<loc>https://singhq.site/menu/privacyPolicy/</loc>
-<lastmod>2025-01-27T10:47:35+00:00</lastmod>
-<priority>0.64</priority>
+  <loc>https://singhq.site/menu/privacyPolicy/</loc>
+  <lastmod>2025-01-27T10:47:35+00:00</lastmod>
+  <priority>0.64</priority>
 </url>
 <url>
-<loc>https://singhq.site/menu/t&c/</loc>
-<lastmod>2025-01-27T10:47:35+00:00</lastmod>
-<priority>0.64</priority>
+  <loc>https://singhq.site/menu/t&amp;c/</loc>
+  <lastmod>2025-01-27T10:47:35+00:00</lastmod>
+  <priority>0.64</priority>
 </url>
+
+
 </urlset>
