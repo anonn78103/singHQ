@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Timer</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #121212;
+            color: #FFFFFF;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2em;
+            color: #FFFFFF;
+        }
+
+        .display {
+            font-size: 3em;
+            margin: 20px 0;
+            color: #FFFFFF;
+        }
+
+        .btn-group {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-round {
+            border-radius: 50%;
+            border: none;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #333333;
+            color: #FFFFFF;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 24px;
+        }
+
+        .btn-round:hover {
+            background-color: #444444;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .recorded-laps {
+            list-style: none;
+            padding: 0;
+            max-width: 300px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .lap-entry {
+            padding: 10px;
+            background-color: #1E1E1E;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .lap-index {
+            font-weight: bold;
+            color: #BBBBBB;
+        }
+
+        .lap-time {
+            color: #FFFFFF;
+        }
+
+        .clock-icon {
+            font-size: 40px;
+            color: #BBBBBB;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <h1>Timer</h1>
+        <div class="clock-icon"><i class="fas fa-clock"></i></div>
+        <div class="display" id="timerDisplay">00:00:00</div>
+        <ul class="recorded-laps" id="lapsContainer"></ul>
+        <div class="btn-group">
+            <button id="toggleBtn" class="btn-round">
+                <i id="toggleIcon" class="fas fa-play"></i>
+            </button>
+            <button id="lapBtn" class="btn-round hidden">
+                <i class="fas fa-stopwatch"></i>
+            </button>
+            <button id="resetBtn" class="btn-round hidden">
+                <i class="fas fa-undo-alt"></i>
+            </button>
+        </div>
+    </div>
+    <script>
+        const timerDisplay = document.getElementById("timerDisplay");
+        const toggleBtn = document.getElementById("toggleBtn");
+        const lapBtn = document.getElementById("lapBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const lapsContainer = document.getElementById("lapsContainer");
+
+        let timer;
+        let running = false;
+        let timeElapsed = 0;
+
+        function padDigits(num, length = 2) {
+            return String(num).padStart(length, "0");
+        }
+
+        function formatElapsedTime(time) {
+            const mins = Math.floor(time / 60000);
+            const secs = Math.floor((time % 60000) / 1000);
+            const millisecs = Math.floor((time % 1000) / 10);
+            return `${padDigits(mins)}:${padDigits(secs)}:${padDigits(millisecs)}`;
+        }
+
+        function refreshTimer() {
+            timerDisplay.textContent = formatElapsedTime(timeElapsed);
+        }
+
+        function beginTimer() {
+            const start = Date.now() - timeElapsed;
+            timer = setInterval(() => {
+                timeElapsed = Date.now() - start;
+                refreshTimer();
+            }, 100);
+            running = true;
+            lapBtn.classList.remove("hidden");
+            resetBtn.classList.add("hidden");
+        }
+
+        function haltTimer() {
+            clearInterval(timer);
+            running = false;
+            lapBtn.classList.add("hidden");
+            resetBtn.classList.remove("hidden");
+        }
+
+        function logLap() {
+            const lapTime = formatElapsedTime(timeElapsed);
+            const lapIndex = lapsContainer.children.length + 1;
+            const lapElement = document.createElement("li");
+            lapElement.className = "lap-entry";
+            lapElement.innerHTML = `<span class="lap-index">#${lapIndex}</span><span class="lap-time">${lapTime}</span>`;
+            lapsContainer.appendChild(lapElement);
+        }
+
+        function resetTimer() {
+            haltTimer();
+            timeElapsed = 0;
+            refreshTimer();
+            lapsContainer.innerHTML = "";
+        }
+
+        toggleBtn.addEventListener("click", () => {
+            if (running) {
+                haltTimer();
+                toggleBtn.innerHTML = '<i class="fas fa-play"></i>';
+            } else {
+                beginTimer();
+                toggleBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            }
+        });
+
+        lapBtn.addEventListener("click", logLap);
+        resetBtn.addEventListener("click", resetTimer);
+    </script>
+</body>
+
+</html>
