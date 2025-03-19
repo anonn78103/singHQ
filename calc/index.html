@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/png" href="http://takeinfo.me/assets/images/icon_TROPHY-modified (1).png">
+    <!-- Add the circular favicon -->
+    <link rel="icon" type="image/png" href="https://singhq.site/calc/icon_TROPHY-modified%20(1).png">
 
     <title>Winrate Calculator (Last 50 Battles)</title>
     <style>
@@ -112,6 +113,26 @@
             opacity: 0.5;
             pointer-events: none;
         }
+
+        .current-battle {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .win {
+            background: rgba(40, 167, 69, 0.2);
+            border: 1px solid #28A745;
+            color: #28A745;
+        }
+
+        .loss {
+            background: rgba(220, 53, 69, 0.2);
+            border: 1px solid #DC3545;
+            color: #DC3545;
+        }
     </style>
 </head>
 
@@ -129,18 +150,40 @@
             <button class="undo disabled" id="undoBtn" onclick="undo()">⏪ Undo</button>
             <button class="redo disabled" id="redoBtn" onclick="redo()">⏩ Redo</button>
         </div>
+        <div id="current-battle-display" class="current-battle"></div>
     </div>
 
     <script>
         if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/service-worker.js')
-        .then(reg => console.log("Service Worker Registered", reg))
-        .catch(err => console.log("Service Worker Registration Failed", err));
-             }
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(reg => console.log("Service Worker Registered", reg))
+                .catch(err => console.log("Service Worker Registration Failed", err));
+        }
 
         let battles = [];
         let history = [];
         let historyIndex = -1;
+
+        function getISTTimestamp() {
+            const date = new Date();
+            const offset = 5.5 * 60 * 60 * 1000; // IST is UTC+5:30
+            const istDate = new Date(date.getTime() + offset);
+
+            // Format date as "date-month" (e.g., 25-Oct)
+            const formattedDate = istDate.toLocaleString('en-IN', {
+                day: 'numeric',
+                month: 'short',
+            });
+
+            // Format time as "hh:mm AM/PM" (e.g., 02:30 PM)
+            const formattedTime = istDate.toLocaleString('en-IN', {
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: true,
+            });
+
+            return `${formattedDate}, ${formattedTime}`;
+        }
 
         function saveState() {
             if (history.length >= 50) history.shift();
@@ -153,12 +196,13 @@
 
         function updateDisplay() {
             let last50 = battles.slice(-50);
-            let totalWins = last50.reduce((sum, val) => sum + val, 0);
+            let totalWins = last50.filter(battle => battle.result === 1).length;
             let totalMatches = last50.length;
             document.getElementById("score").value = `${totalWins}/${totalMatches}`;
             document.getElementById("percentage").innerText = totalMatches === 0 ? "NaN%" : ((totalWins / totalMatches) * 100).toFixed(2) + "%";
             localStorage.setItem("battles", JSON.stringify(battles));
             updateButtons();
+            updateCurrentBattleDisplay();
         }
 
         function updateButtons() {
@@ -167,23 +211,24 @@
         }
 
         function increaseWin() {
-            battles.push(1);
+            const newBattle = { result: 1, timestamp: getISTTimestamp() };
+            battles.push(newBattle);
             saveState();
             updateDisplay();
         }
 
         function decreaseWin() {
-            battles.push(0);
+            const newBattle = { result: 0, timestamp: getISTTimestamp() };
+            battles.push(newBattle);
             saveState();
             updateDisplay();
         }
 
         function resetWinrate() {
             battles = [];
-            saveState();  
+            saveState();
             updateDisplay();
         }
-
 
         function editScore() {
             let input = document.getElementById("score").value;
@@ -192,8 +237,8 @@
             let newMatches = parseInt(parts[1]);
 
             if (!isNaN(newWins) && !isNaN(newMatches) && newWins <= newMatches) {
-                let newBattles = new Array(newMatches).fill(0);
-                for (let i = 0; i < newWins; i++) newBattles[i] = 1;
+                let newBattles = new Array(newMatches).fill({ result: 0, timestamp: getISTTimestamp() });
+                for (let i = 0; i < newWins; i++) newBattles[i] = { result: 1, timestamp: getISTTimestamp() };
                 battles = newBattles;
                 saveState();
                 updateDisplay();
@@ -218,6 +263,18 @@
             }
         }
 
+        function updateCurrentBattleDisplay() {
+            const currentBattleDisplay = document.getElementById("current-battle-display");
+            if (battles.length > 0) {
+                const lastBattle = battles[battles.length - 1];
+                currentBattleDisplay.textContent = `${lastBattle.timestamp}`;
+                currentBattleDisplay.className = `current-battle ${lastBattle.result === 1 ? 'win' : 'loss'}`;
+            } else {
+                currentBattleDisplay.textContent = "";
+                currentBattleDisplay.className = "current-battle";
+            }
+        }
+
         function loadStoredData() {
             let storedBattles = localStorage.getItem("battles");
             let storedHistory = localStorage.getItem("battleHistory");
@@ -233,7 +290,8 @@
         window.onload = loadStoredData;
     </script>
 
-<script type="text/javascript" src="/unprotected/back_to_spaceship.js?hash=4975d460e508829e8fb64d3962bc44ad35f3a95a"></script>
+    <script type="text/javascript"
+        src="/unprotected/back_to_spaceship.js?hash=4975d460e508829e8fb64d3962bc44ad35f3a95a"></script>
 
 </body>
 
