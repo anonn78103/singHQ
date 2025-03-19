@@ -1,0 +1,19 @@
+{
+  "name": "Winrate Calculator",
+  "short_name": "WinrateCalc",
+  "description": "A calculator that tracks winrate based on the last 50 battles.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#1E3A5F",
+  "theme_color": "#1E3A5F",
+  "icons": [
+    {
+      "src": "/icon_TROPHY-modified.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "scope": "/",
+  "id": "/",
+  "orientation": "portrait"
+}
