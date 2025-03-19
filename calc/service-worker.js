@@ -2,10 +2,10 @@ self.addEventListener('install', event => {
     event.waitUntil(
         caches.open('winrate-cache-v1').then(cache => {
             return cache.addAll([
-                '/',
-                '/index.html',
-                '/manifest.json',
-                '/icon_TROPHY-modified.png'
+                '/calc/',
+                '/calc/index.html',
+                '/calc/manifest.json',
+                '/calc/icon_TROPHY-modified (1).png'
             ]);
         })
     );
