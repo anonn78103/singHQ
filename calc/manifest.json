@@ -2,18 +2,18 @@
   "name": "Winrate Calculator",
   "short_name": "WinrateCalc",
   "description": "A calculator that tracks winrate based on the last 50 battles.",
-  "start_url": "/calc/index.html",
+  "start_url": "/calc/index.html", // Correct start URL
   "display": "standalone",
   "background_color": "#1E3A5F",
   "theme_color": "#1E3A5F",
   "icons": [
     {
-      "src": "/icon_TROPHY-modified (1).png",
+      "src": "/calc/icon_TROPHY-modified (1).png", // Correct path to icon
       "sizes": "512x512",
       "type": "image/png"
     }
   ],
-  "scope": "/",
-  "id": "/",
+  "scope": "/calc/", // Correct scope
+  "id": "/calc/", // Correct ID
   "orientation": "portrait"
 }
