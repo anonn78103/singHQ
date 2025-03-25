@@ -46,17 +46,20 @@
     const result = document.getElementById("result");
     let startTime;
     let timeout;
+    let gameActive = false;
 
     function startGame() {
       gameButton.textContent = "Wait for Green...";
       gameButton.classList.remove("green");
       result.textContent = "";
-      
+      gameActive = false;
+
       const randomDelay = Math.random() * 2000 + 1000; // 1 to 3 seconds
       timeout = setTimeout(() => {
         gameButton.textContent = "CLICK NOW!";
         gameButton.classList.add("green");
         startTime = new Date();
+        gameActive = true;
       }, randomDelay);
     }
 
@@ -68,14 +71,17 @@
     }
 
     gameButton.addEventListener("click", () => {
-      if (gameButton.classList.contains("green")) {
+      if (gameActive) {
         const reactionTime = new Date() - startTime;
         result.textContent = `Reaction Time: ${reactionTime} ms - ${getComment(reactionTime)}`;
-        startGame();
+        gameButton.textContent = "Restarting...";
+        gameButton.classList.remove("green");
+        setTimeout(startGame, 2000); // Show result for 2 seconds
       } else {
         clearTimeout(timeout);
         result.textContent = "Too soon! You clicked before the green signal.";
-        startGame();
+        gameButton.textContent = "Restarting...";
+        setTimeout(startGame, 2000); // Restart in 2 seconds
       }
     });
 
