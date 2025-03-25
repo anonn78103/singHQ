@@ -52,7 +52,7 @@
       gameButton.classList.remove("green");
       result.textContent = "";
       
-      const randomDelay = Math.random() * 3000 + 2000; // 2 to 5 seconds
+      const randomDelay = Math.random() * 2000 + 1000; // 1 to 3 seconds
       timeout = setTimeout(() => {
         gameButton.textContent = "CLICK NOW!";
         gameButton.classList.add("green");
@@ -60,14 +60,21 @@
       }, randomDelay);
     }
 
+    function getComment(time) {
+      if (time < 200) return "Incredible! You're as fast as an F1 driver!";
+      if (time < 300) return "Great! Impressive reaction time!";
+      if (time < 500) return "Good! You're pretty quick!";
+      return "Keep practicing! You'll get faster!";
+    }
+
     gameButton.addEventListener("click", () => {
       if (gameButton.classList.contains("green")) {
         const reactionTime = new Date() - startTime;
-        result.textContent = `Reaction Time: ${reactionTime} ms`;
+        result.textContent = `Reaction Time: ${reactionTime} ms - ${getComment(reactionTime)}`;
         startGame();
       } else {
         clearTimeout(timeout);
-        result.textContent = "Too soon! Wait for green.";
+        result.textContent = "Too soon! You clicked before the green signal.";
         startGame();
       }
     });
