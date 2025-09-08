@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Venv Setup Commands</title>
+  <style>
+    body {
+      font-family: monospace, sans-serif;
+      background: #1e1e1e;
+      color: #f0f0f0;
+      padding: 30px;
+    }
+    .command-box {
+      background: #2d2d2d;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 10px;
+      position: relative;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #007acc;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .copy-btn:hover {
+      background: #005f99;
+    }
+  </style>
+</head>
+<body>
+  <h2>Virtual Environment Setup</h2>
+  
+  <div class="command-box">
+    <code>sudo apt install python3.12-venv</code>
+    <button class="copy-btn" onclick="copyCommand(this)">Copy</button>
+  </div>
+  
+  <div class="command-box">
+    <code>python3 -m venv venv</code>
+    <button class="copy-btn" onclick="copyCommand(this)">Copy</button>
+  </div>
+  
+  <div class="command-box">
+    <code>source venv/bin/activate</code>
+    <button class="copy-btn" onclick="copyCommand(this)">Copy</button>
+  </div>
+  
+  <script>
+    function copyCommand(btn) {
+      const command = btn.previousElementSibling.textContent;
+      navigator.clipboard.writeText(command).then(() => {
+        btn.textContent = "Copied!";
+        setTimeout(() => btn.textContent = "Copy", 1500);
+      });
+    }
+  </script>
+</body>
+</html>
