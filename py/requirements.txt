@@ -1,0 +1,17 @@
+# Core libraries
+pandas
+numpy
+
+# Visualization
+matplotlib
+seaborn
+networkx
+
+# Machine Learning
+scikit-learn
+
+# Frequent pattern mining (Apriori, association rules)
+mlxtend
+
+# Scientific computing (hierarchical clustering, linkage, dendrograms)
+scipy
