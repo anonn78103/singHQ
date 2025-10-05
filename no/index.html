@@ -1,12 +1,85 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="refresh" content="0;url=https://filmm.me/4bjFUBDC">
-    <title>Redirecting...</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Remote file viewer</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;margin:18px;background:#f6f8fb;color:#111}
+    .card{max-width:900px;margin:0 auto;background:#fff;padding:16px;border-radius:8px;box-shadow:0 6px 20px rgba(20,30,40,0.06)}
+    pre{white-space:pre-wrap;word-break:break-word;max-height:60vh;overflow:auto;padding:12px;background:#0b1220;color:#dff;font-family:monospace;border-radius:6px}
+    .muted{color:#666;font-size:14px}
+    input[type=text]{width:100%;padding:8px;border-radius:6px;border:1px solid #ddd}
+    .row{display:flex;gap:8px;margin-top:10px}
+    button{padding:8px 10px;border-radius:6px;border:1px solid #2b6cff;background:#2b6cff;color:white;cursor:pointer}
+    a.btn{display:inline-block;padding:8px 10px;border-radius:6px;border:1px solid #aaa;text-decoration:none;color:#111;background:#efefef}
+  </style>
 </head>
 <body>
-    <p>If you are not redirected, <a href="https://filmm.me/4bjFUBDC">click here</a>.</p>
+  <div class="card">
+    <h2>Remote file viewer</h2>
+    <p class="muted">Enter a URL (example: <code>https://singhq.site/python/asdf.py</code>) and click <strong>Load</strong>. If the server forces a download, use the server-header fixes below.</p>
+
+    <input id="url" type="text" value="https://singhq.site/asdf.py" />
+    <div class="row">
+      <button id="load">Load</button>
+      <a id="openBtn" class="btn" target="_blank" rel="noopener">Open in new tab</a>
+      <a id="downloadBtn" class="btn" target="_blank" rel="noopener" download>Download</a>
+    </div>
+
+    <p id="status" class="muted"></p>
+    <pre id="out"><em>No file loaded yet.</em></pre>
+  </div>
+
+<script>
+const loadBtn = document.getElementById('load');
+const urlInput = document.getElementById('url');
+const out = document.getElementById('out');
+const status = document.getElementById('status');
+const openBtn = document.getElementById('openBtn');
+const downloadBtn = document.getElementById('downloadBtn');
+
+async function loadURL(u){
+  out.textContent = 'Loading...';
+  status.textContent = '';
+  openBtn.href = u;
+  downloadBtn.href = u;
+
+  try {
+    const res = await fetch(u, {mode: 'cors'}); // requires CORS on remote host
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+
+    // examine content-type — prefer text
+    const ct = res.headers.get('content-type') || '';
+    const cd = res.headers.get('content-disposition') || '';
+
+    // If server sends attachment in Content-Disposition, fetch may still succeed but browser may download when navigated directly.
+    if (cd && /attachment/i.test(cd)) {
+      status.textContent = 'Server sent Content-Disposition: attachment — preview may be blocked. Try fixing server headers (see instructions).';
+    } else if (!/text|json|octet-stream|python|csv|xml/i.test(ct)) {
+      // content-type not obviously textual
+      status.textContent = 'Content-Type appears non-textual: ' + ct + ' — preview might be binary.';
+    } else {
+      status.textContent = 'Content-Type: ' + ct + (cd ? (', Content-Disposition: '+cd) : '');
+    }
+
+    // get response as text
+    const text = await res.text();
+    out.textContent = text;
+  } catch (err) {
+    out.textContent = 'Unable to fetch file: ' + err.message + '\n\nFallback options:\n - If cross-origin fetch is blocked, the server must enable CORS.\n - If server returns Content-Disposition: attachment, change server to inline.\n - As a workaround you can open the file link (Open in new tab) or use a proxy.';
+    status.textContent = 'Fetch failed: ' + err.message;
+  }
+}
+
+loadBtn.addEventListener('click', ()=>loadURL(urlInput.value.trim()));
+
+// quick load on enter
+urlInput.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') loadURL(urlInput.value.trim()); });
+
+// set open/download hrefs initially
+openBtn.href = urlInput.value;
+downloadBtn.href = urlInput.value;
+</script>
 </body>
 </html>
