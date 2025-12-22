@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Font Connectivity Test</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --font-mono: 'Share Tech Mono', monospace;
+            --font-sans: 'Inter', sans-serif;
+            --bg-color: #0f172a;
+            --text-color: #f1f5f9;
+            --accent-color: #38bdf8;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+
+        .test-box {
+            border: 1px solid #334155;
+            padding: 2rem;
+            border-radius: 12px;
+            background: #1e293b;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        p {
+            color: #94a3b8;
+            margin-bottom: 2rem;
+        }
+
+        .command-preview {
+            font-family: var(--font-mono);
+            background: #000;
+            color: var(--accent-color);
+            padding: 1rem;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .status {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="test-box">
+        <h1>Inter Font Test</h1>
+        <p>If this looks clean and modern, "Inter" is working.</p>
+
+        <div class="command-preview">
+            /aow prod GIVE_GOODS {"profileId": 12345, "tokens": 500}
+        </div>
+        <p style="margin-top: 10px;">If the command above looks like a digital/tech font, "Share Tech Mono" is working.</p>
+
+        <div class="status">
+            Connectivity Status: <span id="status-text">Checking...</span>
+        </div>
+    </div>
+
+    <script>
+        // Simple check to see if the font family was actually applied
+        document.fonts.ready.then(function() {
+            const statusText = document.getElementById('status-text');
+            const isInterLoaded = document.fonts.check('1em Inter');
+            const isMonoLoaded = document.fonts.check('1em "Share Tech Mono"');
+
+            if (isInterLoaded && isMonoLoaded) {
+                statusText.innerText = "ONLINE (Google Fonts Loaded)";
+                statusText.style.color = "#4ade80";
+            } else {
+                statusText.innerText = "OFFLINE (Using Fallback Fonts)";
+                statusText.style.color = "#f87171";
+            }
+        });
+    </script>
+</body>
+</html>
